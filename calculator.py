@@ -12,6 +12,7 @@ window.columnconfigure(1, weight=1)
 window.columnconfigure(2, weight=1)
 window.columnconfigure(3, weight=1)
 
+
 def change_text(text):
     if str(type(label['text'])) != "<class 'str'>":
         label['text'] = text
@@ -68,10 +69,13 @@ erase.grid(column=3, row=0, sticky=tk.N, padx=3, pady=10)
 
 style = ttk.Style()
 style.theme_use('clam')
-style.map('TButton', background=[('!active', '#b0b0b0'), ('active', '#d4d4d4')], foreground=[('!active', 'white'), ('active', 'white')])
+style.map('TButton', background=[('!active', '#b0b0b0'), ('active', '#d4d4d4')],
+          foreground=[('!active', 'white'), ('active', 'white')])
 style.configure('TButton', font=('Verdana', 15), borderwidth=0)
-style.map('my.TButton', background=[('!active', '#ff9466'), ('active', '#ffbda1')], foreground=[('!active', 'white'), ('active', 'white')])
-style.map('op.TButton', background=[('!active', '#7588ff'), ('active', '#9ca9ff')], foreground=[('!active', 'white'), ('active', 'white')])
+style.map('my.TButton', background=[('!active', '#ff9466'), ('active', '#ffbda1')],
+          foreground=[('!active', 'white'), ('active', 'white')])
+style.map('op.TButton', background=[('!active', '#7588ff'), ('active', '#9ca9ff')],
+          foreground=[('!active', 'white'), ('active', 'white')])
 style.configure("TLabel", font=('Verdana', 15), foreground="#383838")
 
 seven = ttk.Button(window, text="7", command=lambda text="7": change_text(text))
