@@ -1,5 +1,7 @@
+import re
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from screeninfo import get_monitors
 
 
@@ -14,8 +16,8 @@ class App(tk.Tk):
             self.rowconfigure(i, weight=1)
         for m in get_monitors():
             if m.is_primary:
-                self.create_view(int(m.width/120), int(m.height/180), int(m.width/320))
-                #print(m.height/180, m.width/320)
+                self.create_view(int(m.width/96), int(m.height/135), int(m.width/320))
+                print(f"Parameters of view: {int(m.width/96), int(m.height/135), int(m.width/320)}")
 
     def create_view(self, font, button_height, button_width):
         style = ttk.Style()
@@ -34,7 +36,7 @@ class App(tk.Tk):
         label.configure(background="white")
         erase = ttk.Button(self, text="⬅", style='special.TButton', command=lambda: self.erase(label))
         erase.grid(column=3, row=0, sticky=tk.N, padx=3, pady=3)
-        buttons = ['789/', '456x', '123-']
+        buttons = ['789/', '456*', '123-']
         for i in range(3):
             for j in range(4):
                 if j < 3:
@@ -48,7 +50,7 @@ class App(tk.Tk):
         zero = ttk.Button(self, text="0", command=lambda text="0": self.change_text(label, text))
         zero.grid(column=0, row=4, padx=3, pady=3)
         equals = ttk.Button(self, text="=", style='special.TButton', command=lambda: self.calculate(label))
-        equals.grid(column=1, columnspan=2, row=4, padx=3, pady=3, ipadx=button_width*8)
+        equals.grid(column=1, columnspan=2, row=4, padx=3, pady=3, ipadx=button_width*10)
         sum = ttk.Button(self, text="+", style='op.TButton', command=lambda text="+": self.change_text(label, text))
         sum.grid(column=3, row=4, padx=3, pady=3)
 
@@ -65,7 +67,35 @@ class App(tk.Tk):
             label['text'] = label['text'][0:-1]
 
     def calculate(self, label):
-        print(label['text'])
+        expr = str(label['text'])
+        if expr == '':
+            messagebox.showwarning("Ошибка", "Пустой ввод")
+            return 0
+        nums = []
+        try:
+            nums = [int(x) for x in re.split('[\+\-\/\*]', expr)]
+        except ValueError:
+            messagebox.showwarning("Ошибка", "Неверно расставлены знаки и символы")
+        ops = []
+        result = nums[-1]
+        for i in expr:
+            if not i.isdigit():
+                ops.append(i)
+        for ind in range(len(ops)):
+            op = ops[ind]
+            if op == "+":
+                result = nums[ind] + nums[ind+1]
+            elif op == "-":
+                result = nums[ind] - nums[ind+1]
+            elif op == "*":
+                result = nums[ind] * nums[ind+1]
+            elif op == "/":
+                try:
+                    result = nums[ind] / nums[ind+1]
+                except ZeroDivisionError:
+                    messagebox.showerror("Ошибка", "Деление на ноль!")
+            nums[ind+1] = result
+        label['text'] = result
 
 
 if __name__ == "__main__":
